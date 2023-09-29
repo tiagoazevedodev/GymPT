@@ -67,7 +67,7 @@ if botao_aluno:
     senha_temporario = criar_input(1040, 561, 40, 166, 166, 166)
     while tela_login:
         mouse = window.checkMouse()
-        if mouse != None and botao_login.getP1().getX() < mouse.getX() < botao_login.getP2().getX() and botao_login.getP1().getY() < mouse.getY() < botao_login.getP2().getY():
+        if mouse is not None and botao_login.getP1().getX() < mouse.getX() < botao_login.getP2().getX() and botao_login.getP1().getY() < mouse.getY() < botao_login.getP2().getY():
             usuario_input = usuario_temporario.getText()
             senha_input = senha_temporario.getText()
             if usuario_input in login_alunos and senha_input == login_alunos[usuario_input]:
@@ -78,7 +78,7 @@ if botao_aluno:
                 desenhar_background("img/tela_login.png", "img/erro_tela_login.png")
                 erro = True
         else:
-            if mouse != None and botao_criar_login.getP1().getX() < mouse.getX() < botao_criar_login.getP2().getX() and botao_criar_login.getP1().getY() < mouse.getY() < botao_criar_login.getP2().getY():
+            if mouse is not None and botao_criar_login.getP1().getX() < mouse.getX() < botao_criar_login.getP2().getX() and botao_criar_login.getP1().getY() < mouse.getY() < botao_criar_login.getP2().getY():
                 tela_dados = True
                 tela_criar_login = True
                 if erro:
@@ -138,7 +138,7 @@ while tela_criar_login:
 
 
 if tela_dados:
-    desenhar_background("img/telainicial.png","img/cadastro-1.png")
+    desenhar_background("img/telainicial.png", "img/cadastro-1.png")
     idade = criar_input(389, 412, 13, 166, 166, 166)
     sexo = criar_input(399, 519, 20, 166, 166, 166)
     altura = criar_input(427, 624, 12, 166, 166, 166)
@@ -172,7 +172,7 @@ while tela_dados:
             break
 
 if botao_aluno:
-    desenhar_background("img/cadastro7.png","img/loading.png")
+    desenhar_background("img/cadastro7.png", "img/loading.png")
 
 if tela_dados:
     with open("db/dados_alunos.csv", "a") as arquivo:
@@ -225,7 +225,6 @@ Panturrilha no Leg Press: 4x15
     body_mensagem = json.dumps(body_mensagem)
     requisicao = requests.post(link, headers=headers, data=body_mensagem)
     resposta = requisicao.json()
-
     treino = resposta["choices"][0]["message"]["content"]
     if treino != "":
         listaTreino = treino.split(";")
@@ -257,12 +256,12 @@ if tela_loading:
     output2.setStyle("bold")
     output2.setFace("courier")
 
-    desenhar_background("img/loading.png","img/tela_treino.png")
+    desenhar_background("img/loading.png", "img/tela_treino.png")
     output1.draw(window)
     output2.draw(window)
 
-if botao_aluno == False:
-    desenhar_background("img/login_instrutor.png","img/escolher_aluno.png")
+if botao_aluno is False:
+    desenhar_background("img/login_instrutor.png", "img/escolher_aluno.png")
     aluno_escolhido_temporario = criar_input(960, 1006, 55, 250, 250, 250)
 while True:
     mouse = window.getMouse()
