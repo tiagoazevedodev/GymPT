@@ -38,6 +38,7 @@ def desenhar_background(imagem_anterior, imagem_desejada):
     imagem = Image(Point(LARGURA // 2, ALTURA // 2), f"{imagem_desejada}")
     imagem.draw(window)
 
+
 def criar_input(x, y, width, r, g, b):
     entrada = Entry(Point(x, y), width)
     entrada.setFill(color_rgb(r, g, b))
@@ -54,7 +55,6 @@ while tela_inicial:
     elif botao_aluno.getP1().getX() < mouse.getX() < botao_aluno.getP2().getX() and botao_aluno.getP1().getY() < mouse.getY() < botao_aluno.getP2().getY():
         botao_aluno = True
         tela_inicial = False
-
 
 
 botao_login = Rectangle(Point(790, 637), Point(1129, 773))
