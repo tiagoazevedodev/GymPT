@@ -184,7 +184,7 @@ if tela_dados:
 while tela_loading:
     mouse = window.checkMouse()
     dados_split = string.split(";")
-    headers = {"Authorization": f"Bearer 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",
+    headers = {"Authorization": f"Bearer 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",
                "Content-Type": "application/json"}
     id_modelo = "gpt-3.5-turbo"
     link = "https://api.openai.com/v1/chat/completions"
@@ -225,19 +225,24 @@ Panturrilha no Leg Press: 4x15
     body_mensagem = json.dumps(body_mensagem)
     requisicao = requests.post(link, headers=headers, data=body_mensagem)
     resposta = requisicao.json()
+
     treino = resposta["choices"][0]["message"]["content"]
     if treino != "":
         listaTreino = treino.split(";")
         blocosTexto = len(listaTreino)
         primeiroPrintLista = []
+        treino_salvar = ""
         for i in range(blocosTexto//2):
             primeiroPrintLista.append(listaTreino[i])
             primeiroPrint = " ".join(primeiroPrintLista)
+        treino_salvar = primeiroPrint+";"
         segundoPrintLista = []
         for i in range(blocosTexto//2, blocosTexto):
             segundoPrintLista.append(listaTreino[i])
             segundoPrint = " ".join(segundoPrintLista)
-
+        treino_salvar += segundoPrint
+        with open("db/treinos.csv", "a") as arquivo:
+            arquivo.write(f"{cadastro_usuario_input}:{treino_salvar}>")
         break
 
 if tela_loading:
