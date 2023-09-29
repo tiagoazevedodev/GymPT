@@ -50,6 +50,7 @@ while tela_inicial:
     if botao_professor.getP1().getX() < mouse.getX() < botao_professor.getP2().getX() and botao_professor.getP1().getY() < mouse.getY() < botao_professor.getP2().getY():
         botao_aluno = False
         tela_inicial = False
+        tela_loading = False
     elif botao_aluno.getP1().getX() < mouse.getX() < botao_aluno.getP2().getX() and botao_aluno.getP1().getY() < mouse.getY() < botao_aluno.getP2().getY():
         botao_aluno = True
         tela_inicial = False
@@ -170,7 +171,8 @@ while tela_dados:
                 input.undraw()
             break
 
-desenhar_background("img/cadastro7.png","img/loading.png")
+if botao_aluno:
+    desenhar_background("img/cadastro7.png","img/loading.png")
 
 if tela_dados:
     with open("db/dados_alunos.csv", "a") as arquivo:
@@ -182,7 +184,7 @@ if tela_dados:
 while tela_loading:
     mouse = window.checkMouse()
     dados_split = string.split(";")
-    headers = {"Authorization": f"Bearer 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",
+    headers = {"Authorization": f"Bearer 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",
                "Content-Type": "application/json"}
     id_modelo = "gpt-3.5-turbo"
     link = "https://api.openai.com/v1/chat/completions"
@@ -209,7 +211,7 @@ Tríceps Testa: 4x10
 Tríceps Corda no Pulley: 3x12
 ;
 
-Dia 2 (Quarta-feira) - Treino de Pernas:
+Dia 2 (Terça-feira) - Treino de Pernas:
 
 Agachamento Livre: 4x10
 Leg Press: 3x12
@@ -217,39 +219,45 @@ Cadeira Extensora: 3x12
 Flexora deitado: 4x10
 Panturrilha no Leg Press: 4x15
 ;
-
-Dia 3 (Sexta-feira) - Treino de Costas e Bíceps:
-
-Barra Fixa (ou Puxada na Frente): 4x10
-Remada Curvada com Barra: 3x12
-Remada Sentada na Máquina: 3x12
-Rosca Direta com Barra Reta: 4x10
-Rosca Martelo com Halteres: 3x12
-;
-
-Dia 4 (Sábado) - Treino de Ombros e Abdominais:
-
-Desenvolvimento com Barra: 4x10
-Elevação Lateral com Halteres: 3x12
-Elevação Frontal com Barra: 3x12
-Prancha Abdominal: 4 séries de 30 segundos
-Obliquo no Banco Inclinado: 3x15 (cada lado)"""}]
+...
+"""}]
     }
     body_mensagem = json.dumps(body_mensagem)
     requisicao = requests.post(link, headers=headers, data=body_mensagem)
     resposta = requisicao.json()
     treino = resposta["choices"][0]["message"]["content"]
     if treino != "":
+        listaTreino = treino.split(";")
+        blocosTexto = len(listaTreino)
+        primeiroPrintLista = []
+        for i in range(blocosTexto//2):
+            primeiroPrintLista.append(listaTreino[i])
+            primeiroPrint = " ".join(primeiroPrintLista)
+        segundoPrintLista = []
+        for i in range(blocosTexto//2, blocosTexto):
+            segundoPrintLista.append(listaTreino[i])
+            segundoPrint = " ".join(segundoPrintLista)
+
         break
 
-output = Text(Point(LARGURA//2, ALTURA//1.95), treino)
-output.setSize(14)
-output.setFill(color_rgb(225, 225, 225))
-output.setStyle("bold")
-output.setFace("courier")
+if tela_loading:
+    output1 = Text(Point(LARGURA//3, ALTURA//1.95), primeiroPrint)
+    output1.setSize(15)
+    output1.setFill(color_rgb(225, 225, 225))
+    output1.setStyle("bold")
+    output1.setFace("courier")
+    output2 = Text(Point(LARGURA//3*2, ALTURA//1.95), segundoPrint)
+    output2.setSize(15)
+    output2.setFill(color_rgb(225, 225, 225))
+    output2.setStyle("bold")
+    output2.setFace("courier")
 
+    desenhar_background("img/loading.png","img/tela_treino.png")
+    output1.draw(window)
+    output2.draw(window)
 
-desenhar_background("img/loading.png","img/tela_treino.png")
-output.draw(window)
+if botao_aluno == False:
+    desenhar_background("img/login_instrutor.png","img/escolher_aluno.png")
+    aluno_escolhido_temporario = criar_input(960, 1006, 55, 250, 250, 250)
 while True:
     mouse = window.getMouse()
