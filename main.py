@@ -72,6 +72,7 @@ if botao_aluno:
             senha_input = senha_temporario.getText()
             if usuario_input in login_alunos and senha_input == login_alunos[usuario_input]:
                 tela_login = False
+                tela_loading = False
                 usuario_temporario.undraw()
                 senha_temporario.undraw()
             else:
@@ -262,6 +263,38 @@ if tela_loading:
 
 if botao_aluno is False:
     desenhar_background("img/login_instrutor.png", "img/escolher_aluno.png")
+    with open("db/alunos.csv", "r") as arquivo:
+        lista_alunos = []
+        for linha in arquivo:
+            nome_aluno = linha.split(";")[0]
+            lista_alunos.append(nome_aluno)
+
+        quantidade_de_alunos = len(lista_alunos)
+        primeiroPrintAlunos = []
+        for i in range(quantidade_de_alunos//2):
+            primeiroPrintAlunos.append(lista_alunos[i])
+            primeiroPrintAlunos_STR = "\n".join(primeiroPrintAlunos)
+        segundoPrintAlunos = []
+        for i in range(quantidade_de_alunos//2, quantidade_de_alunos):
+            segundoPrintAlunos.append(lista_alunos[i])
+            segundoPrintAlunos_STR = "\n".join(segundoPrintAlunos)
+        print(primeiroPrintAlunos_STR)
+        print(segundoPrintAlunos_STR)
+        output1_escolher_aluno = Text(Point(LARGURA // 3, ALTURA // 1.80), primeiroPrintAlunos_STR)
+        output1_escolher_aluno.setSize(24)
+        output1_escolher_aluno.setFill(color_rgb(225, 225, 225))
+        output1_escolher_aluno.setStyle("bold")
+        output1_escolher_aluno.setFace("courier")
+
+        output2_escolher_aluno = Text(Point(LARGURA // 3 * 2, ALTURA // 1.80), segundoPrintAlunos_STR)
+        output2_escolher_aluno.setSize(24)
+        output2_escolher_aluno.setFill(color_rgb(225, 225, 225))
+        output2_escolher_aluno.setStyle("bold")
+        output2_escolher_aluno.setFace("courier")
+        output1_escolher_aluno.draw(window)
+        output2_escolher_aluno.draw(window)
+
     aluno_escolhido_temporario = criar_input(960, 1006, 55, 250, 250, 250)
+
 while True:
     mouse = window.getMouse()
