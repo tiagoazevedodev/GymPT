@@ -75,6 +75,7 @@ if botao_aluno:
                 tela_loading = False
                 usuario_temporario.undraw()
                 senha_temporario.undraw()
+                #mostrar treino
             else:
                 desenhar_background("img/tela_login.png", "img/erro_tela_login.png")
                 erro = True
