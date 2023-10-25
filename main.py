@@ -10,9 +10,9 @@ tela_erro_login = False
 tela_criar_login = False
 tela_dados = False
 tela_loading = True
+tela_treino = False
 login_alunos = {}
 login_instrutores = {}
-dados_alunos = {}
 
 with open("db/alunos.csv", "r") as arquivo:
     for linha in arquivo:
@@ -72,6 +72,8 @@ if botao_aluno:
             senha_input = senha_temporario.getText()
             if usuario_input in login_alunos and senha_input == login_alunos[usuario_input]:
                 tela_login = False
+                tela_loading = False
+                tela_treino = True
                 usuario_temporario.undraw()
                 senha_temporario.undraw()
             else:
@@ -171,9 +173,6 @@ while tela_dados:
                 input.undraw()
             break
 
-if botao_aluno:
-    desenhar_background("img/cadastro7.png", "img/loading.png")
-
 if tela_dados:
     with open("db/dados_alunos.csv", "a") as arquivo:
         arquivo.write(f"{cadastro_usuario_input}:")
@@ -182,6 +181,7 @@ if tela_dados:
     treino = ""
 
 while tela_loading:
+    desenhar_background("img/cadastro7.png", "img/loading.png")
     mouse = window.checkMouse()
     dados_split = string.split(";")
     headers = {"Authorization": f"Bearer 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",
@@ -241,7 +241,7 @@ Panturrilha no Leg Press: 4x15
             segundoPrint = " ".join(segundoPrintLista)
         treino_salvar += segundoPrint
         with open("db/treinos.csv", "a") as arquivo:
-            arquivo.write(f"{cadastro_usuario_input}:{treino_salvar}>")
+            arquivo.write(f"{cadastro_usuario_input}${treino_salvar}>")
         break
 
 if tela_loading:
@@ -259,6 +259,52 @@ if tela_loading:
     desenhar_background("img/loading.png", "img/tela_treino.png")
     output1.draw(window)
     output2.draw(window)
+
+while tela_treino:
+    desenhar_background("img/tela_login.png", "img/tela_treino.png")
+    with open("db/treinos.csv", "r") as arquivo:
+        arquivo = arquivo.read()
+        arquivo = arquivo[:-1]
+        arquivo = arquivo[1:]
+        listaAlunos = []
+        listaTreinos = []
+        listaAlunosBruta = arquivo.split(">")
+        for i in listaAlunosBruta:
+            aluno, treino = i.split("$")
+            listaAlunos.append(aluno)
+            listaTreinos.append(treino)
+        for aluno in listaAlunos:
+            if aluno == usuario_input:
+                index = listaAlunos.index(aluno)
+                treino = listaTreinos[index]
+                break
+    listaTreino = treino.split(";")
+    blocosTexto = len(listaTreino)
+    primeiroPrintLista = []
+    for i in range(blocosTexto // 2):
+        primeiroPrintLista.append(listaTreino[i])
+        primeiroPrint = " ".join(primeiroPrintLista)
+    segundoPrintLista = []
+    for i in range(blocosTexto // 2, blocosTexto):
+        segundoPrintLista.append(listaTreino[i])
+        segundoPrint = " ".join(segundoPrintLista)
+
+    output1 = Text(Point(LARGURA // 3, ALTURA // 1.95), primeiroPrint)
+    output1.setSize(15)
+    output1.setFill(color_rgb(225, 225, 225))
+    output1.setStyle("bold")
+    output1.setFace("courier")
+    output2 = Text(Point(LARGURA // 3 * 2, ALTURA // 1.95), segundoPrint)
+    output2.setSize(15)
+    output2.setFill(color_rgb(225, 225, 225))
+    output2.setStyle("bold")
+    output2.setFace("courier")
+    break
+
+if tela_treino:
+    output1.draw(window)
+    output2.draw(window)
+
 
 if botao_aluno is False:
     desenhar_background("img/login_instrutor.png", "img/escolher_aluno.png")
