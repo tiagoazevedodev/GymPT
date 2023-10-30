@@ -45,7 +45,7 @@ def criar_input(x, y, width, r, g, b):
     entrada.draw(window)
     return entrada
 
-
+# Tela de escolher Aluno ou Professor
 while tela_inicial:
     mouse = window.getMouse()
     if botao_professor.getP1().getX() < mouse.getX() < botao_professor.getP2().getX() and botao_professor.getP1().getY() < mouse.getY() < botao_professor.getP2().getY():
@@ -60,7 +60,7 @@ while tela_inicial:
 botao_login = Rectangle(Point(790, 637), Point(1129, 773))
 botao_criar_login = Rectangle(Point(840, 798), Point(1080, 850))
 erro = False
-
+#Login dos Alunos
 if botao_aluno:
     desenhar_background("img/telainicial.png", "img/tela_login.png")
     usuario_temporario = criar_input(1040, 483, 40, 166, 166, 166)
@@ -70,19 +70,23 @@ if botao_aluno:
         if mouse is not None and botao_login.getP1().getX() < mouse.getX() < botao_login.getP2().getX() and botao_login.getP1().getY() < mouse.getY() < botao_login.getP2().getY():
             usuario_input = usuario_temporario.getText()
             senha_input = senha_temporario.getText()
+            #Testa se o Usuario é válido
             if usuario_input in login_alunos and senha_input == login_alunos[usuario_input]:
                 tela_login = False
                 tela_loading = False
                 tela_treino = True
                 usuario_temporario.undraw()
                 senha_temporario.undraw()
+            #PopUp caso as credenciais estejam erradas
             else:
                 desenhar_background("img/tela_login.png", "img/erro_tela_login.png")
                 erro = True
+        #Tela de Cadastrar Novo Usuário
         else:
             if mouse is not None and botao_criar_login.getP1().getX() < mouse.getX() < botao_criar_login.getP2().getX() and botao_criar_login.getP1().getY() < mouse.getY() < botao_criar_login.getP2().getY():
                 tela_dados = True
                 tela_criar_login = True
+                #Testa se Houve o PopUp para apagar a tela Anterior
                 if erro:
                     desenhar_background("img/erro_tela_login.png", "img/criarlogin.png")
                 else:
@@ -90,6 +94,7 @@ if botao_aluno:
                 tela_login = False
                 usuario_temporario.undraw()
                 senha_temporario.undraw()
+#Login dos Instrutores
 else:
     desenhar_background("img/telainicial.png", "img/login_instrutor.png")
     usuario_temporario = criar_input(1040, 483, 40, 166, 166, 166)
@@ -99,22 +104,17 @@ else:
         if mouse is not None and botao_login.getP1().getX() < mouse.getX() < botao_login.getP2().getX() and botao_login.getP1().getY() < mouse.getY() < botao_login.getP2().getY():
             usuario_input = usuario_temporario.getText()
             senha_input = senha_temporario.getText()
+            #Testa se o Instrutor é valido
             if usuario_input in login_instrutores and senha_input == login_instrutores[usuario_input]:
                 tela_dados = False
                 tela_login = False
                 usuario_temporario.undraw()
                 senha_temporario.undraw()
+            #Mostra PopUp avisando que as credenciais estão erradas
             else:
-                desenhar_background("img/tela_login.png", "img/erro_tela_login.png")
+                desenhar_background("img/tela_login.png", "img/tela_erro_instrutor.png")
                 erro = True
-        else:
-            if mouse is not None and botao_criar_login.getP1().getX() < mouse.getX() < botao_criar_login.getP2().getX() and botao_criar_login.getP1().getY() < mouse.getY() < botao_criar_login.getP2().getY():
-                if erro:
-                    desenhar_background("img/erro_tela_login.png", "img/criarlogin.png")
-                else:
-                    desenhar_background("img/tela_login.png", "img/criarlogin.png")
-                tela_criar_login = True
-                tela_login = False
+                tela_criar_login = False
                 tela_dados = False
 if tela_criar_login:
     cadastro_usuario_temporario = criar_input(1040, 483, 40, 166, 166, 166)
@@ -308,7 +308,8 @@ if tela_treino:
 
 if botao_aluno is False:
     desenhar_background("img/login_instrutor.png", "img/escolher_aluno.png")
-    aluno_escolhido_temporario = criar_input(960, 1006, 55, 250, 250, 250)
+    tela_escolher_aluno = True
+    aluno_escolhido_temporario = criar_input(882, 980, 40, 250, 250, 250)
     with open("db/alunos.csv", "r") as arquivo:
         lista_alunos = []
         for linha in arquivo:
@@ -324,8 +325,6 @@ if botao_aluno is False:
         for i in range(quantidade_de_alunos//2, quantidade_de_alunos):
             segundoPrintAlunos.append(lista_alunos[i])
             segundoPrintAlunos_STR = "\n".join(segundoPrintAlunos)
-        print(primeiroPrintAlunos_STR)
-        print(segundoPrintAlunos_STR)
         output1_escolher_aluno = Text(Point(LARGURA // 3, ALTURA // 1.80), primeiroPrintAlunos_STR)
         output1_escolher_aluno.setSize(24)
         output1_escolher_aluno.setFill(color_rgb(225, 225, 225))
@@ -340,5 +339,50 @@ if botao_aluno is False:
         output1_escolher_aluno.draw(window)
         output2_escolher_aluno.draw(window)
     
-while True:
+while tela_escolher_aluno:
     mouse = window.getMouse()
+    botao_enviar = Rectangle(Point(1079.0, 953.0), Point(1239.0, 1003.0))
+    aluno_escolhido = aluno_escolhido_temporario.getText()
+    with open("db/treinos.csv", "r") as arquivo:
+        arquivo = arquivo.read()
+        arquivo = arquivo[:-1]
+        arquivo = arquivo[1:]
+        listaAlunos = []
+        listaTreinos = []
+        listaAlunosBruta = arquivo.split(">")
+        for i in listaAlunosBruta:
+            aluno, treino = i.split("$")
+            listaAlunos.append(aluno)
+            listaTreinos.append(treino)
+        for aluno in listaAlunos:
+            if aluno == usuario_input:
+                index = listaAlunos.index(aluno)
+                treino = listaTreinos[index]
+                break
+    listaTreino = treino.split(";")
+    blocosTexto = len(listaTreino)
+    primeiroPrintLista = []
+    for i in range(blocosTexto // 2):
+        primeiroPrintLista.append(listaTreino[i])
+        primeiroPrint = " ".join(primeiroPrintLista)
+    segundoPrintLista = []
+    for i in range(blocosTexto // 2, blocosTexto):
+        segundoPrintLista.append(listaTreino[i])
+        segundoPrint = " ".join(segundoPrintLista)
+
+    output1 = Text(Point(LARGURA // 3, ALTURA // 1.95), primeiroPrint)
+    output1.setSize(15)
+    output1.setFill(color_rgb(225, 225, 225))
+    output1.setStyle("bold")
+    output1.setFace("courier")
+    output2 = Text(Point(LARGURA // 3 * 2, ALTURA // 1.95), segundoPrint)
+    output2.setSize(15)
+    output2.setFill(color_rgb(225, 225, 225))
+    output2.setStyle("bold")
+    output2.setFace("courier")
+    aluno_escolhido_temporario.undraw()
+    desenhar_background("img/escolher_aluno.png","img/instrutor_treino_do_aluno.png")
+    output1.draw(window)
+    output2.draw(window)
+while True:
+    mouse = window.checkMouse()
