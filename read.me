@@ -1,11 +1,13 @@
-# Gym App
+Henrique Bertochi e Tiago Azevedo
 
-This app is designed to help gym owners and trainers manage their clients and workouts more efficiently, with the goal of reducing the need for additional personnel.
+Chat GymPT se trata de um aplicativo que recebe dados do aluno e transforma em um prompt para a IA (Open IA) realizar a requisição do treino.
 
-## Features
+Aplicativo para o ALUNO:
+-> Pode criar o seu login, com um usuário ainda não existente e sua senha, isso será salvo em um arquivo.
+-> Ao logar será direcionado a tela para cadastro, aonde irá preencher NOME, IDADE, SEXO, ALTURA, PESO, DIAS DISPONÍVEIS, TEMPO DISPONÍVEL E OBJETIVO. A cada campo preenchido ou apagado, aparece quantos campos faltam, ao enviar com apenas todos os campos preenchidos, os dados serão salvos em um arquivo.
+-> Durante a tela de carregamento, mandamos o prompt formatado com os dados do aluno para a IA gerar o treino
+-> Ao gerar, a string será formatada em 2 blocos para mostra-la na tela de treino personalizado
 
-- Client management: Add, edit, and delete client profiles, including personal information, fitness goals, and progress tracking.
-- Workout creation: Create custom workout plans for clients based on their fitness goals and progress.
-- Exercise library: Access a library of exercises with detailed instructions and videos to help trainers create effective workout plans.
-- Schedule management: Schedule client appointments and track attendance.
-- Payment processing: Accept payments from clients directly through the app.
+Aplicativo para o INSTRUTOR:
+-> Os instrutores já possuem o login salvo em um arquivo (prisco:senha, penna:senha).
+-> Ao logar, irá aparecer uma tela com todos os alunos já cadastrados, irá escolher um para ser apresentado o seu treino já salvo.

@@ -11,6 +11,7 @@ tela_criar_login = False
 tela_dados = False
 tela_loading = True
 tela_treino = False
+tela_escolher_aluno = False
 login_alunos = {}
 login_instrutores = {}
 
@@ -116,16 +117,20 @@ else:
                 erro = True
                 tela_criar_login = False
                 tela_dados = False
+#Inputs para criar login
 if tela_criar_login:
     cadastro_usuario_temporario = criar_input(1040, 483, 40, 166, 166, 166)
     cadastro_senha_temporario = criar_input(1040, 561, 40, 166, 166, 166)
     botao_enviar_login = Rectangle(Point(741, 638), Point(1178, 773))
 
+
 while tela_criar_login:
     mouse = window.checkMouse()
+    #Clicou em enviar, e guardou os dados de usuário
     if mouse is not None and botao_enviar_login.getP1().getX() < mouse.getX() < botao_enviar_login.getP2().getX() and botao_enviar_login.getP1().getY() < mouse.getY() < botao_enviar_login.getP2().getY():
         cadastro_senha_input = cadastro_senha_temporario.getText()
         cadastro_usuario_input = cadastro_usuario_temporario.getText()
+        #Testa se já existe um usuário com mesmo nome
         if cadastro_usuario_input not in login_alunos.keys():
             with open("db/alunos.csv", "a") as arquivo:
                 string = f"{cadastro_usuario_input};{cadastro_senha_input}\n"
@@ -136,9 +141,7 @@ while tela_criar_login:
             tela_dados = True
         else:
             desenhar_background("img/criarlogin.png", "img/erro_usuario_login.png")
-
-
-
+#Tela de preencher os campos
 if tela_dados:
     desenhar_background("img/telainicial.png", "img/cadastro-1.png")
     idade = criar_input(389, 412, 13, 166, 166, 166)
@@ -154,7 +157,7 @@ if tela_dados:
                   dias_disponiveis, tempo_disponivel, objetivo]
     dados_true = {}
 
-
+#Adiciona os textos dos campos à uma lista, removendo se for apagado
 while tela_dados:
     mouse = window.checkMouse()
     for i, campo in enumerate(campos):
@@ -164,15 +167,18 @@ while tela_dados:
         elif i in dados_true:
             del dados_true[i]
 
+    #Com base nos campos preenchidos, troca a imagem dizendo quantos campos faltam
     campos_preenchidos = len(dados_true)
     desenhar_background(f"img/cadastro{campos_preenchidos - 2}.png", f"img/cadastro{campos_preenchidos - 1}.png")
 
+    #Clicou em enviar e limpou os inputs
     if mouse is not None:
         if botao_enviar.getP1().getX() < mouse.getX() < botao_enviar.getP2().getX() and botao_enviar.getP1().getY() < mouse.getY() < botao_enviar.getP2().getY() and campos_preenchidos == 8:
             for input in campos:
                 input.undraw()
             break
 
+#Salva os dados do usuário no arquivo
 if tela_dados:
     with open("db/dados_alunos.csv", "a") as arquivo:
         arquivo.write(f"{cadastro_usuario_input}:")
@@ -180,6 +186,7 @@ if tela_dados:
         arquivo.write(f"{string}\n")
     treino = ""
 
+#Tela de carregamento de treino, aqui está acontecendo a requisição da IA
 while tela_loading:
     desenhar_background("img/cadastro7.png", "img/loading.png")
     mouse = window.checkMouse()
@@ -226,6 +233,8 @@ Panturrilha no Leg Press: 4x15
     requisicao = requests.post(link, headers=headers, data=body_mensagem)
     resposta = requisicao.json()
     treino = resposta["choices"][0]["message"]["content"]
+
+    #Quando treino receber uma string, ela será formatada em dois blocos para ser mostrado na tela
     if treino != "":
         listaTreino = treino.split(";")
         blocosTexto = len(listaTreino)
@@ -244,6 +253,7 @@ Panturrilha no Leg Press: 4x15
             arquivo.write(f"{cadastro_usuario_input}${treino_salvar}>")
         break
 
+#Mostra o treino na tela
 if tela_loading:
     output1 = Text(Point(LARGURA//3, ALTURA//1.95), primeiroPrint)
     output1.setSize(15)
@@ -260,6 +270,7 @@ if tela_loading:
     output1.draw(window)
     output2.draw(window)
 
+#Quando o usuário já tiver login, Essa parte do código faz o seu treino já salvo ser mostrado
 while tela_treino:
     desenhar_background("img/tela_login.png", "img/tela_treino.png")
     with open("db/treinos.csv", "r") as arquivo:
@@ -305,7 +316,7 @@ if tela_treino:
     output1.draw(window)
     output2.draw(window)
 
-
+#Mostrando os alunos já cadastrados para o instrutor escolher um e ver seu treino salvo
 if botao_aluno is False:
     desenhar_background("img/login_instrutor.png", "img/escolher_aluno.png")
     tela_escolher_aluno = True
@@ -339,6 +350,7 @@ if botao_aluno is False:
         output1_escolher_aluno.draw(window)
         output2_escolher_aluno.draw(window)
     
+#Mostra o treino do aluno escolhido
 while tela_escolher_aluno:
     mouse = window.getMouse()
     botao_enviar = Rectangle(Point(1079.0, 953.0), Point(1239.0, 1003.0))
